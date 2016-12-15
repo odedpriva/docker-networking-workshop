@@ -3,12 +3,21 @@ iptables is a command-line firewall utility that uses policy chains to allow or 
 When a connection tries to establish itself on your system, iptables looks for a rule in its list to match it to. 
 If it doesn't find one, it resorts to the default action.
 
+On a high-level iptables might contain multiple tables. Tables might contain multiple chains.  
+Chains can be built-in or user-defined. Chains might contain multiple rules. Rules are defined for the packets.
+
+![Alt](/images/iptables-table-chain-rule-structure.png "iptables-table-chain-rule-structure")
+
+IPTables has the following 4 built-in tables.
+![Alt](/images/iptables-filter-nat-mangle-tables.png "iptables-filter-nat-mangle-tables")
+![Alt](http://www.thegeekstuff.com/wp-content/uploads/2011/01/iptables-table-chain-rule-structure.png "iptables-filter-nat-mangle-tables")
+
+
+
 let's use **odedpriva/docker-networking** docker image and start a container: 
 
-![GitHub Logo](/images/giphy.gif)
-
 ~~~
-docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
+$ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
  
 # starting an alpine container
 # --rm         : delete container after we start it
@@ -21,18 +30,18 @@ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
 
 
 ~~~
->> iptables -L -v
+$ iptables -t nat -L -n -v
 # list rules
 ~~~
 ~~~
->> iptables -A INPUT -i lo -j ACCEPT
+$ iptables -A INPUT -i lo -j ACCEPT
 # Append to INPUT chain
 # interface loopback
 # jump to ACCEPT target [packets get SENT somewhere]
 ~~~
   
 ~~~    
->> iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+$ iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
  
 # Append to INPUT chain
 # Use module conntrack
@@ -40,8 +49,8 @@ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
 # jumpt to accept
 ~~~
 ~~~
->> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
->> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+$ iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+$ iptables -A INPUT -p tcp --dport 80 -j ACCEPT
  
 # Append to INPUT chain
 # Protocol TCP
@@ -49,25 +58,26 @@ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
 # Jump to ACCEPT
 ~~~
 ~~~
->> iptables -A INPUT -j DROP / REJECT
+$ iptables -A INPUT -j DROP / REJECT
 # set the last rule to reject all other packets.
  
->> iptables -I INPUT 5 -p tcp --dport 443 -j ACCEPT
+$ iptables -I INPUT 5 -p tcp --dport 443 -j ACCEPT
 # update table.
  
->> iptables -D INPUT 6
+$ iptables -D INPUT 6
 # delete rule #6
   
->> iptables -P INPUT DROP
+$ iptables -P INPUT DROP
 #change INPUT default to DROP
 ~~~ 
 
   
 ~~~
 # using nc to establish a tcp server listener
->> while true ; do nc -l 8000 < /tmp/index.html ; done
+$ while true ; do nc -l 8000 < /tmp/index.html ; done
 ~~~
 
 
 #### links 
-* https://serversforhackers.com/video/firewalls-basics-of-iptables 
+* https://serversforhackers.com/video/firewalls-basics-of-iptables
+* http://www.thegeekstuff.com/2011/01/iptables-fundamentals/
