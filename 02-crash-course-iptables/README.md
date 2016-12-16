@@ -6,12 +6,26 @@ If it doesn't find one, it resorts to the default action.
 On a high-level iptables might contain multiple tables. Tables might contain multiple chains.  
 Chains can be built-in or user-defined. Chains might contain multiple rules. Rules are defined for the packets.
 
-![Alt](/images/iptables-table-chain-rule-structure.png "iptables-table-chain-rule-structure")
+![Alt](http://www.thegeekstuff.com/wp-content/uploads/2011/01/iptables-table-chain-rule-structure.png "iptables-table-chain-rule-structure")
 
-IPTables has the following 4 built-in tables.
-![Alt](/images/iptables-filter-nat-mangle-tables.png "iptables-filter-nat-mangle-tables")
-![Alt](http://www.thegeekstuff.com/wp-content/uploads/2011/01/iptables-table-chain-rule-structure.png "iptables-filter-nat-mangle-tables")
 
+The following diagram shows the three important tables in iptables.
+![Alt](http://www.thegeekstuff.com/wp-content/uploads/2011/01/iptables-filter-nat-mangle-tables.png "iptables-filter-nat-mangle-tables")
+
+* Filter is default table for iptables. So, if you don’t define you own table, you’ll be using filter table. 
+  Iptables’s filter table has the following built-in chains.
+* Iptable’s NAT table has the following built-in chains.
+* Iptables’s Mangle table is for specialized packet alteration.
+
+
+![Alt](https://i.stack.imgur.com/4wdkF.png "Routing 101")
+
+
+Following are the key points to remember for the iptables rules.
+
+* Rules contain a criteria and a target.
+* If the criteria is matched, it goes to the rules specified in the target (or) executes the special values mentioned in the target.
+* If the criteria is not matached, it moves on to the next rule.
 
 
 let's use **odedpriva/docker-networking** docker image and start a container: 
@@ -25,21 +39,39 @@ $ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
 # -p 8000:8000 : exposing port 8000 
 # odedpriva/docker-networking : container name
 # sh : using sh shell as the conatiner process.
-
 ~~~
 
+~~~
+# using nc to establish a tcp server listener
+$ while true ; do echo this is a test | nc -l 8000 ; done &
+~~~
 
 ~~~
+# list NAT rules
 $ iptables -t nat -L -n -v
-# list rules
+# -t table
+# -L list 
+# -n numeric output of addresses and ports
+# - verbose
 ~~~
+
 ~~~
-$ iptables -A INPUT -i lo -j ACCEPT
-# Append to INPUT chain
-# interface loopback
-# jump to ACCEPT target [packets get SENT somewhere]
+# list filter rules
+$ iptables -L -n -v
 ~~~
+
+~~~
+# drop all comming to connection to port 8000
+$ iptables -A INPUT -p tcp --dport 8000 -j DROP
+~~~
+
+~~~
+# delete rule #1
+$ iptables -D INPUT 1
+~~~
+
   
+###some other useful commands  
 ~~~    
 $ iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
  
@@ -68,15 +100,8 @@ $ iptables -D INPUT 6
 # delete rule #6
   
 $ iptables -P INPUT DROP
-#change INPUT default to DROP
+# change INPUT default to DROP
 ~~~ 
-
-  
-~~~
-# using nc to establish a tcp server listener
-$ while true ; do nc -l 8000 < /tmp/index.html ; done
-~~~
-
 
 #### links 
 * https://serversforhackers.com/video/firewalls-basics-of-iptables
