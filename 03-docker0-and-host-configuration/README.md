@@ -11,6 +11,10 @@ skip this if you are running on native linux machine.
 
 let's check docker0 interfaces.
 ~~~
+$ brctl show
+bridge name	bridge id		STP enabled	interfaces
+docker0		8000.024298df2024	no		veth4700952
+
 $ ip a show docker0
 14: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP
     link/ether 02:42:70:b9:89:81 brd ff:ff:ff:ff:ff:ff
@@ -108,29 +112,6 @@ Chain POSTROUTING (policy ACCEPT 175 packets, 24199 bytes)
  pkts bytes target     prot opt in     out     source               destination
  
 # no change 
-
-~~~
-
-let's see what happens when we start a new container.
-~~~
-
-$ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
-
-$ ip addr show eth0
-28: eth0@if29: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
-    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet 172.17.0.3/16 scope global eth0
-       valid_lft forever preferred_lft forever
-    inet6 fe80::42:acff:fe11:3/64 scope link
-       valid_lft forever preferred_lft forever
-       
-# the ip is part of the 172.17.0.0/16 subnet
-
-$ ip r
-default via 172.17.0.1 dev eth0
-172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.0.3
-
-# the routing is via docker0
 
 ~~~
 

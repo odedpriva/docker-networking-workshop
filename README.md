@@ -1,14 +1,15 @@
 docker-networking-workshop
 ===
-### 01-crash-course-routing
-### 02-crash-course-iptables
-### 03-crash-course-name-resolution
+## Workshop agenda
 
-### 04-docker0-and-host-configuration
+###let's start by going over some basic network concepts and related linux tools.
+#### 01-crash-course-routing
+#### 02-crash-course-iptables
+#### 03-crash-course-name-resolution
 
+###Now that we got that covered let's see how Docker are using these tools. 
 
-The Container Networking Model
-===
+###The Container Networking Model
 The Docker networking architecture is built on a set of interfaces called the Container Networking Model (CNM)
 ![cnm]("https://github.com/docker/labs/raw/master/networking/concepts/img/cnm.png")
 
@@ -23,11 +24,14 @@ Network — The CNM does not specify a Network in terms of the OSI model.
 An implementation of a Network could be a Linux bridge, a VLAN, etc. 
 A Network is a collection of endpoints that have connectivity between them.
 
-###Categories of Network Drivers
+####Categories of Network Drivers
 * Network Drivers - Docker Network Drivers provide the actual implementation that makes networks work, 
 Docker offers both native (Bridge, Overlay, MACVLAN, Host, None) and 'plugin' network drivers such as [contiv]('http://contiv.github.io/'), [weave]("https://www.weave.works/docs/net/latest/introducing-weave/")
 Network scope is the domain of the driver which can be the local or swarm scope.
 * IPAM Drivers -  Docker has a built-in IP Address Management Driver that provides default subnets or IP addresses for Networks and Endpoints if they are not specified
 
 
-### 05-docker-private-network
+#### 04-docker0-and-host-configuration
+
+
+#### 05-docker-private-network
