@@ -34,4 +34,7 @@ Network scope is the domain of the driver which can be the local or swarm scope.
 #### 04-docker0-and-host-configuration
 
 
-#### 05-docker-private-network
+#### 05-docker-bridge-network
+
+
+#### 06-docker-bridge-private-network
