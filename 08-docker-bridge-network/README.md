@@ -20,15 +20,20 @@ host $ docker run --rm -it --name c1 odedpriva/docker-networking sh -c "ip r"
 
 We can see that we are assigned an ip from the docker0 subnet, 
 Our default GW is docker0
-All packets destined to 172.17.X.X are routed through et0
+All packets destined to 172.17.X.X are routed through eth0
 
-What's going on on the host? 
+
+What's going on on the docker-for-mac? 
 
 ~~~
-docker-for-mac $ ip route
-default via 192.168.65.1 dev eth0  src 192.168.65.2  metric 204
-172.17.0.0/16 dev docker0  src 172.17.0.1
-192.168.65.0/29 dev eth0  src 192.168.65.2  metric 204
+host $ docker run --rm -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh -c "ip route"
+                 default via 192.168.65.1 dev eth0  src 192.168.65.2  metric 204
+                 172.17.0.0/16 dev docker0  src 172.17.0.1
+                 192.168.65.0/29 dev eth0  src 192.168.65.2  metric 204
+
+host $ docker run --rm -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh -c "brctl show"
+       bridge name	bridge id		STP enabled	interfaces
+       docker0		8000.0242730c554e	no		veth1844ff2
 ~~~
 
 
