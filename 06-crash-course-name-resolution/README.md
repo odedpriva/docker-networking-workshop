@@ -27,7 +27,7 @@ nameserver 192.168.65.1
 to see the name resolution process: 
 
 ~~~
-$ docker run -t --rm --name test --net=mybuilding odedpriva/docker-networking tcpdump not arp
+$ docker run -t --rm --name test     odedpriva/docker-networking tcpdump not arp
 
 # and on another tab
 

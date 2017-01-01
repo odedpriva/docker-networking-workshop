@@ -3,15 +3,19 @@ docker-networking-workshop
 ## Workshop agenda
 
 ###let's start by going over some basic network concepts and related linux tools.
-#### 01-crash-course-routing
-#### 02-crash-course-iptables
-#### 03-crash-course-name-resolution
+01-crash-course-routing
+
+ 
 
 ###Now that we got that covered let's see how Docker are using these tools. 
 
 ###The Container Networking Model
-The Docker networking architecture is built on a set of interfaces called the Container Networking Model (CNM)
-![cnm]("https://github.com/docker/labs/raw/master/networking/concepts/img/cnm.png")
+
+####libnetwork
+[libnetwork](https://github.com/docker/libnetwork/) provides a native Go implementation for connecting containers
+The goal of libnetwork is to deliver a robust Container Network Model that provides a consistent programming interface and the required network abstractions for applications.
+
+![cnm]("./img/cnm-model.png")
 
 There are several high-level constructs in the CNM. They are all OS and infrastructure agnostic so that applications can have a uniform experience no matter the infrastructure stack.
 
@@ -38,3 +42,9 @@ Network scope is the domain of the driver which can be the local or swarm scope.
 
 
 #### 06-docker-bridge-private-network
+
+
+
+
+#### network model Vs other tools
+http://blog.kubernetes.io/2016/01/why-Kubernetes-doesnt-use-libnetwork.html
