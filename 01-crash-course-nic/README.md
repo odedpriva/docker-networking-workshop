@@ -1,7 +1,10 @@
-A network interface is the point of interconnection between a computer and a private or public network. 
-A network interface is generally a network interface card (NIC), but does not have to have a physical form.
-Instead, the network interface can be implemented in software. 
-For example, the loopback interface (127.0.0.1 for IPv4 and ::1 for IPv6) is not a physical device but a piece of software simulating a network interface
+* A network interface is the point of interconnection between a computer and a private or public network. 
+* A network interface is generally a network interface card (NIC), but does not have to have a physical form.
+* Instead, the network interface can be implemented in software. 
+* For example, the loopback interface (127.0.0.1 for IPv4 and ::1 for IPv6) is not a physical device but a piece of software simulating a network interface
+
+![network interface](img/NIC.jpg)
+
 
 ~~~
 
@@ -23,4 +26,5 @@ c1 $ ping -c 2 127.0.0.2
 ###links 
 
 * https://docs.oracle.com/javase/tutorial/networking/nifs/definition.html
+* http://www.dsm.fordham.edu/cgi-bin/man-cgi.pl?topic=ip-link
 

@@ -106,3 +106,4 @@ $ iptables -P INPUT DROP
 #### links 
 * https://serversforhackers.com/video/firewalls-basics-of-iptables
 * http://www.thegeekstuff.com/2011/01/iptables-fundamentals/
+* https://www.youtube.com/watch?v=QFNgmO_mrRY
