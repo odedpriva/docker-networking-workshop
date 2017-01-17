@@ -1,58 +1,83 @@
 #!/usr/bin/env bash -e
 
-network_name=dockermeetup
-#number_of_managers=3
-number_of_workers=1
-leader_node=manager1
+prefix=nethandson
+network_name=${prefix}
+manager_node=${prefix}_manager
+server_node=${prefix}_server
+proxy_node=${prefix}_proxy
 docker_image_to_use=docker:dind
 init_image=odedpriva/docker-meetup:0.1.0
+swarm_network=mynet
 
-echo ----- creating ${network_name} network -----
+if [[ $1 == 'cleanup' ]]; then
+    printf '\n\e[1;34m%-6s\e[m\n' 'deleting workshop containers'
+    docker rm -f $(docker ps -q -f name=${prefix}) 2> /dev/null
+    printf '\n\e[1;34m%-6s\e[m\n' 'deleting workshop networks'
+    docker network rm ${prefix} 2> /dev/null
+    exit
+fi
+
+
+printf "\n\e[1;34m%-6s\e[m\n" "creating ${network_name} network"
 docker network ls | grep ${network_name} || docker network create ${network_name}
 
-echo ----- creating leader ${leader_node}-----
-docker run -d -p 8080:8080 -p 2377 --privileged --name ${leader_node} -h ${leader_node} --net=${network_name} ${docker_image_to_use}
-#
-#echo ----- initiating ${number_of_managers} managers -----
-#for i in `seq 2 $number_of_managers`; do
-#  docker run -d -p 2377 --privileged --name manager${i} -h manager${i} --net=${network_name} ${docker_image_to_use}
-#done
-#docker ps -f name=manager
+printf "\n\e[1;34m%-6s\e[m\n" "creating ${manager_node}"
+docker run -d -p 8000:8000 -p 2377 --privileged --name ${manager_node} -h ${manager_node} --net=${network_name} ${docker_image_to_use}
+
+printf "\n\e[1;34m%-6s\e[m\n" 'creating nodes as workers'
+docker run -d -p 7946  --privileged -v ${PWD}:/tmp --name ${server_node} -h ${server_node} --net=${network_name} ${docker_image_to_use}
+docker run -d -p 7946  --privileged -v ${PWD}:/tmp --name ${proxy_node} -h ${proxy_node} --net=${network_name} ${docker_image_to_use}
+
+printf "\n\e[1;34m%-6s\e[m\n" 'loading images to workers'
+docker exec ${server_node} docker load -i /tmp/docker-images/proxy.tar
+docker exec ${server_node} docker load -i /tmp/docker-images/busybox.tar
+docker exec ${server_node} docker load -i /tmp/docker-images/tcpdump.tar
+docker exec ${proxy_node} docker load -i /tmp/docker-images/proxy.tar
+docker exec ${proxy_node} docker load -i /tmp/docker-images/busybox.tar
+docker exec ${proxy_node} docker load -i /tmp/docker-images/tcpdump.tar
+
+printf "\n\e[1;34m%-6s\e[m\n" 'creating swarm'
+docker exec ${manager_node} docker swarm init --listen-addr 0.0.0.0:2377
+manager_token=$(docker exec ${manager_node} docker swarm join-token -q manager)
+workers_token=$(docker exec ${manager_node} docker swarm join-token -q worker)
+manager_ip=$(docker inspect --format "{{ .NetworkSettings.Networks.${network_name}.IPAddress }}" ${manager_node})
+
+printf "\n\e[1;34m%-6s\e[m\n" 'connecting nodes to swarm'
+docker exec ${server_node} docker swarm join --token ${workers_token} ${manager_ip}:2377
+docker exec ${proxy_node} docker swarm join --token ${workers_token} ${manager_ip}:2377
+
+printf "\n\e[1;34m%-6s\e[m\n" 'draining manager'
+docker exec ${manager_node} docker node update --availability drain ${manager_node}
+
+printf "\n\e[1;34m%-6s\e[m\n" 'assigning nodes a constrain'
+docker exec ${manager_node} docker node update --label-add type=proxy ${proxy_node}
+docker exec ${manager_node} docker node update --label-add type=server ${server_node}
+
+if [[ $1 == "full" ]]; then
+    printf "\n\e[1;34m%-6s\e[m\n" "creating ${swarm_network} overlay network"
+    docker exec ${manager_node} docker network create ${swarm_network} -d overlay
+    printf "\n\e[1;34m%-6s\e[m\n" 'creating server service'
+    docker exec ${manager_node} docker service create --constraint 'node.labels.type == server' --replicas 2 --name server --network ${swarm_network} busybox busybox httpd -f -p 8000
+    printf "\n\e[1;34m%-6s\e[m\n" 'creating proxy service'
+    docker exec ${manager_node} docker service create --constraint 'node.labels.type == proxy' --replicas 2 --name proxy --network ${swarm_network} -p 8000:8000 odedpriva/proxy
+
+    printf "\n\e[1;34m%-6s\e[m\n" 'server list'
+    docker exec ${manager_node} docker service ps server 2> /dev/null
+    printf "\n\e[1;34m%-6s\e[m\n" 'proxy list'
+    docker exec ${manager_node} docker service ps proxy 2> /dev/null
+fi
 
 
-echo ------ initiating ${number_of_workers} workers ------
-for i in `seq 1 $number_of_workers`; do
-  docker run -d -p 7946  --privileged --name worker${i} -h worker${i} --net=${network_name} ${docker_image_to_use}
-done
-docker ps -f name=worker
+printf "\n\e[1;34m%-6s\e[m\n" "setting aliases"
+printf "%s\n" "
+alias manager='docker exec ${manager_node}'
+alias proxy='docker exec ${proxy_node}'
+alias server='docker exec ${server_node}'
+"
 
-echo ------ creating swarm ------
-docker exec ${leader_node} docker swarm init --listen-addr 0.0.0.0:2377
-manager_token=$(docker exec ${leader_node} docker swarm join-token -q manager)
-worker_token=$(docker exec ${leader_node} docker swarm join-token -q worker)
-leader_ip=$(docker inspect --format "{{ .NetworkSettings.Networks.${network_name}.IPAddress }}" ${leader_node})
-
-#echo ----- connecting manages to ${leader_node}  using token ${manager_token} and ip ${leader_ip} -----
-#for i in `seq 2 $number_of_managers`; do
-#  docker exec manager${i} docker swarm join --token ${manager_token} ${leader_ip}:2377
-#done
-
-#echo ------ disable managers from being worker ------
-#for i in `seq 1 $number_of_managers`; do
-#  docker exec manager1 docker node update --availability drain manager${i}
-#done
-
-echo ------ connecting workers to swarm using token ${worker_token} and ip ${leader_ip} ------
-for i in `seq 1 $number_of_workers`; do
-  docker exec worker${i} docker swarm join --token ${worker_token} ${leader_ip}:2377
-done
-
-docker exec ${leader_node} docker node ls
-
-echo ------ downloading ${init_image} image to workers ------
-for i in `seq 1 $number_of_workers`; do
-  docker exec -d worker${i} docker pull ${init_image}
-done
+printf "\n\e[1;34m%-6s\e[m\n" '
+curl localhost:8000/etc/hostname
+'
 
 
 : '

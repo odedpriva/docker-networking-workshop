@@ -80,62 +80,44 @@ host$ manager docker network create mynet -d overlay && manager docker network l
 now, let's assign it a `server` container
  
 ~~~
-host$ manager docker service create --replicas 2 --name server --network mynet -p 8080:8080 busybox busybox httpd -f -p 8080
+host$ manager docker service create --constraint 'node.labels.type == server' --replicas 2 --name server --network mynet -p 8000 busybox busybox httpd -f -p 8000
 ~~~
 
 let's see the interfaces INSIDE the container. 
 
 ~~~
-host$ manager docker exec $(manager docker ps -q) ip -f inet a
+host$ server docker exec $(server docker ps -q -l) ip -f inet a
       1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1
           inet 127.0.0.1/8 scope host lo
              valid_lft forever preferred_lft forever
-      25: eth0@if26: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1450 qdisc noqueue
-          inet 10.255.0.7/16 scope global eth0
-             valid_lft forever preferred_lft forever
-          inet 10.255.0.5/32 scope global eth0
-             valid_lft forever preferred_lft forever
-      27: eth1@if28: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
-          inet 172.19.0.4/16 scope global eth1
-             valid_lft forever preferred_lft forever
-      29: eth2@if30: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1450 qdisc noqueue
+      23: eth2@if24: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1450 qdisc noqueue
           inet 10.0.0.4/24 scope global eth2
              valid_lft forever preferred_lft forever
           inet 10.0.0.2/32 scope global eth2
              valid_lft forever preferred_lft forever
+      25: eth1@if26: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+          inet 172.19.0.4/16 scope global eth1
+             valid_lft forever preferred_lft forever
+      29: eth0@if30: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1450 qdisc noqueue
+          inet 10.255.0.8/16 scope global eth0
+             valid_lft forever preferred_lft forever
+          inet 10.255.0.6/32 scope global eth0
+             valid_lft forever preferred_lft forever
  
-host$ manager docker inspect $(manager docker ps -q)
+host$ server docker inspect $(server docker ps -q -l)
 ....
 
 "Networks": {
-                "ingress": {
-                    "IPAMConfig": {
-                        "IPv4Address": "10.255.0.7"
-                    },
-                    "Links": null,
-                    "Aliases": [
-                        "adc65137be47"
-                    ],
-                    "NetworkID": "cnlwabmsbi42nqvlta7edsebs",
-                    "EndpointID": "342144c5dda392dfd25f5022d9558c4389cb9f5d246268d911a25fd4be5424b5",
-                    "Gateway": "",
-                    "IPAddress": "10.255.0.7",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:0a:ff:00:07"
-                },
                 "mynet": {
                     "IPAMConfig": {
                         "IPv4Address": "10.0.0.4"
                     },
                     "Links": null,
                     "Aliases": [
-                        "adc65137be47"
+                        "9af35c726864"
                     ],
-                    "NetworkID": "doq5yp8qkzq8efixrgtyfzpm6",
-                    "EndpointID": "64f8d904697e49b9c3f50a0380be27cf81347e1aa08f94c85bd69040085cdcba",
+                    "NetworkID": "el9ygka1zeb3qc22zlwtnblr8",
+                    "EndpointID": "574478db00f34651ae1ec607571cbd0ae8efe660ad37e7edf920a3997f205b1e",
                     "Gateway": "",
                     "IPAddress": "10.0.0.4",
                     "IPPrefixLen": 24,
@@ -145,7 +127,6 @@ host$ manager docker inspect $(manager docker ps -q)
                     "MacAddress": "02:42:0a:00:00:04"
                 }
             }
-
 ....
 
 ~~~
@@ -200,6 +181,41 @@ host$ manager docker exec client.0.eahc0gs79g75h6u2o8wtnef2y curl -s server:8080
 
 now, let's see how this magic happens
 
+First let's investigate the external load balancing a.k.a routing mesh 
+Routing mesh is a new feature in Docker 1.12 that combines ipvs and iptables to create a powerful cluster-wide transport-layer (L4) load balancer
+When any Swarm node receives traffic destined to the published TCP/UDP port of a running service, it forwards it to service's VIP using a pre-defined overlay network called ingress
+
+
+* each service gets a VIP 
+
+~~~
+host$ manager docker service inspect --format '{{.Spec.Name}}-{{json .Endpoint.VirtualIPs}}' $(manager docker service ls -q)
+      server-[{"NetworkID":"ddxnkhz3tzaq2ce7sul7qofyk","Addr":"10.0.0.2/24"}]
+      proxy-[{"NetworkID":"20408srk3176a0yeyjxdxkh28","Addr":"10.255.0.6/16"},{"NetworkID":"ddxnkhz3tzaq2ce7sul7qofyk","Addr":"10.0.0.5/24"}]
+~~~
+
+
+
+The service is given a Virtual IP address that is routable only inside the Docker Network. 
+When requests are made to the IP address, they are distributed to the underlying containers. 
+This Virtual IP is registered with the Embedded DNS server in Docker. 
+When a DNS lookup is made based on the service name, the Virtual IP is returned.
+DNS server is embedded inside Docker engine. Docker DNS resolves the service name and returns list of container ip addresses in random order. 
+Clients normally will pick the first IP so that load balancing can happen between the different instance of the servers.
+
+let's see this in action by monitoring networking on all nodes and containers .. 
+
+the server node
+~~~
+host$ server docker run --rm --net=container:$(server docker ps  -l -q) crccheck/tcpdump not port 7946 and not port 2377 -i any --immediate-mode
+# not port - filter out swarm communication among nodes (7946) and cluster management communications (2377)
+# -i any - all interfaces
+# --immediate-mode - don't buffer output. 
+~~~
+
+
+
+
 service discovery 
 
 load balancing
@@ -215,6 +231,7 @@ http://www.slideshare.net/Docker/docker-networking-control-plane-and-data-plane
 https://www.youtube.com/watch?v=2EfOJhtjhIk
 https://www.youtube.com/watch?v=2ihqKMDRkxM
 http://securitynik.blogspot.co.il/2016/12/docker-networking-internals-container.html
+https://www.katacoda.com/courses/docker-orchestration/load-balance-service-discovery-swarm-mode
 
  is the routing mash network, it is the only network created on all nodes.
 * dns service is running inside the daemon. 
