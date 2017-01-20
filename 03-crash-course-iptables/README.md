@@ -25,7 +25,7 @@ Following are the key points to remember for the iptables rules.
 
 * Rules contain a criteria and a target.
 * If the criteria is matched, it goes to the rules specified in the target (or) executes the special values mentioned in the target.
-* If the criteria is not matached, it moves on to the next rule.
+* If the criteria is not matched, it moves on to the next rule.
 
 
 let's use **odedpriva/docker-networking** docker image and start a container: 
@@ -107,3 +107,4 @@ $ iptables -P INPUT DROP
 * https://serversforhackers.com/video/firewalls-basics-of-iptables
 * http://www.thegeekstuff.com/2011/01/iptables-fundamentals/
 * https://www.youtube.com/watch?v=QFNgmO_mrRY
+* http://www.iptables.info/en/structure-of-iptables.html

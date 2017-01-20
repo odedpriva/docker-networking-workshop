@@ -23,7 +23,7 @@ Swarm scopes overlay networks cannot be used for "docker run", only for services
 
 Let's start by creating 2 swarm using docker-in-docker
 ~~~
-10-docker-overlay-networking $ chmod +x docker-swarm.sh && ./docker-swarm.sh
+10-docker-overlay-networking $ chmod +x docker-swarm.sh && ./docker-swarm.sh -w -s
 ~~~
 
 let's check what we have
@@ -185,6 +185,77 @@ First let's investigate the external load balancing a.k.a routing mesh
 Routing mesh is a new feature in Docker 1.12 that combines ipvs and iptables to create a powerful cluster-wide transport-layer (L4) load balancer
 When any Swarm node receives traffic destined to the published TCP/UDP port of a running service, it forwards it to service's VIP using a pre-defined overlay network called ingress
 
+In high level, this is how it goes: 
+
+![routing-mesh-ingress](./img/routing-mesh-ingress.png)
+
+where each container that has a published port ( like our proxy service ), has etc0,eth1,eth2 interfaces
+~~~
+host$ proxy docker exec $(proxy docker ps -q -l) ip -f inet a
+      1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+          inet 127.0.0.1/8 scope host lo
+             valid_lft forever preferred_lft forever
+      23: eth0@if24: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default  link-netnsid 0
+          inet 10.255.0.7/16 scope global eth0
+             valid_lft forever preferred_lft forever
+          inet 10.255.0.6/32 scope global eth0
+             valid_lft forever preferred_lft forever
+      28: eth1@if29: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default  link-netnsid 1
+          inet 172.19.0.4/16 scope global eth1
+             valid_lft forever preferred_lft forever
+      30: eth2@if31: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default  link-netnsid 2
+          inet 10.0.0.6/24 scope global eth2
+             valid_lft forever preferred_lft forever
+          inet 10.0.0.5/32 scope global eth2
+             valid_lft forever preferred_lft forever
+~~~
+
+eth0 - ingress network
+`proxy docker network inspect --format '{{json .IPAM.Config }}' $(proxy docker network ls -q  -f name=ingress)`
+
+ingress ? what is ingress ? 
+
+![ingress](./img/ingress.png)
+
+
+eth1 - docker_gwbridge
+`proxy docker network inspect --format '{{json .IPAM.Config }}' $(proxy docker network ls -q  -f name=docker_gwbridge)`
+
+eth2 - mynet, the user defined overlay network
+`proxy docker network inspect --format '{{json .IPAM.Config }}' $(proxy docker network ls -q  -f name=mynet)`
+
+
+![tables_traverse](./img/tables_traverse.jpg)
+
+
+let's monitor the traffic coming from our host to the eth0 of the manager
+
+`manager tcpdump ip and not port 7946 and not port 2377  -i eth0  -n --immediate-mode`
+
+and the network docker_gwbridge 
+
+`manager tcpdump ip and not port 7946 and not port 2377  -i docker_gwbridge -n --immediate-mode`
+
+let curl our service
+
+`curl localhost:8000/etc/hostname`
+
+what we can see ? 
+
+`172.18.0.1.39946 > 172.18.0.2.8000` - this is our user defined docker bridge (nethandson) forwarding to ingress_sbox 
+
+what is the route to `172.18.0.2` ? 
+
+it is the docker_gwbridge interface
+~~~
+host$ manager ip r
+default via 172.18.0.1 dev eth0
+172.17.0.0/16 dev docker0  src 172.17.0.1
+172.18.0.0/16 dev eth0  src 172.18.0.2
+172.19.0.0/16 dev docker_gwbridge  src 172.19.0.1
+~~~
+
+
 
 * each service gets a VIP 
 
@@ -226,12 +297,13 @@ The mynet (overlay) network - The ingress and egress point to the overlay networ
 
 
 ####links
-http://www.slideshare.net/Docker/docker-networking-deep-dive
-http://www.slideshare.net/Docker/docker-networking-control-plane-and-data-plane
-https://www.youtube.com/watch?v=2EfOJhtjhIk
-https://www.youtube.com/watch?v=2ihqKMDRkxM
-http://securitynik.blogspot.co.il/2016/12/docker-networking-internals-container.html
-https://www.katacoda.com/courses/docker-orchestration/load-balance-service-discovery-swarm-mode
+http://www.slideshare.net/Docker/docker-networking-deep-dive  
+http://www.slideshare.net/Docker/docker-networking-control-plane-and-data-plane  
+[Docker Networking: Control Plane and Data Plane](https://www.youtube.com/watch?v=2EfOJhtjhIk)  
+[Docker Meetup #42](https://www.youtube.com/watch?v=2ihqKMDRkxM)  
+http://securitynik.blogspot.co.il/2016/12/docker-networking-internals-container.html  
+https://www.katacoda.com/courses/docker-orchestration/load-balance-service-discovery-swarm-mode  
+http://www.tcpdump.org/tcpdump_man.html  
 
  is the routing mash network, it is the only network created on all nodes.
 * dns service is running inside the daemon. 
