@@ -143,7 +143,7 @@ main() {
         usage 0
         ;;
       \?)
-        printf "\n\e[1;34m%-6s\e[m\n" 'invalid usage'
+        printf "\n\e[1;31m%s\e[m" 'invalid usage'
         usage 1
         ;;
       :)
@@ -153,6 +153,10 @@ main() {
   done
 
 }
+if [[ $# -eq 0 ]] ; then
+    printf "\n\e[1;31m%s\e[m" 'invalid usage'
+    usage 1
+fi
 
 main "$@"
 

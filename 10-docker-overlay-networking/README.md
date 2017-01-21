@@ -187,7 +187,7 @@ When any Swarm node receives traffic destined to the published TCP/UDP port of a
 
 In high level, this is how it goes: 
 
-![routing-mesh-ingress](./img/routing-mesh-ingress.png)
+![routing-mesh-ingress](img/routing-mesh-ingress.png)
 
 where each container that has a published port ( like our proxy service ), has etc0,eth1,eth2 interfaces
 ~~~
@@ -215,7 +215,7 @@ eth0 - ingress network
 
 ingress ? what is ingress ? 
 
-![ingress](./img/ingress.png)
+![ingress](img/ingress.png)
 
 
 eth1 - docker_gwbridge
@@ -225,7 +225,7 @@ eth2 - mynet, the user defined overlay network
 `proxy docker network inspect --format '{{json .IPAM.Config }}' $(proxy docker network ls -q  -f name=mynet)`
 
 
-![tables_traverse](./img/tables_traverse.jpg)
+![tables_traverse](img/tables_traverse.jpg)
 
 
 let's monitor the traffic coming from our host to the eth0 of the manager
