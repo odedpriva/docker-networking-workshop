@@ -1,3 +1,4 @@
+### nic 
 * A network interface is the point of interconnection between a computer and a private or public network. 
 * A network interface is generally a network interface card (NIC), but does not have to have a physical form.
 * Instead, the network interface can be implemented in software. 
@@ -23,8 +24,13 @@ c1 $ ping -c 2 127.0.0.2
 
 ~~~
 
-###links 
+*ip* - show / manipulate routing, devices, policy routing and tunnels
+it is available when installing iproute2 package
+
+*ping* - The ping command operates by sending `Internet Control Message Protocol` (ICMP) Echo Request messages to the destination computer and waiting for a response.
+
+### links 
 
 * https://docs.oracle.com/javase/tutorial/networking/nifs/definition.html
-* http://www.dsm.fordham.edu/cgi-bin/man-cgi.pl?topic=ip-link
+* http://www.policyrouting.org/iproute2.doc.html
 
