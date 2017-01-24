@@ -6,20 +6,7 @@ If it doesn't find one, it resorts to the default action.
 On a high-level iptables might contain multiple tables. Tables might contain multiple chains.  
 Chains can be built-in or user-defined. Chains might contain multiple rules. Rules are defined for the packets.
 
-![Alt](http://www.thegeekstuff.com/wp-content/uploads/2011/01/iptables-table-chain-rule-structure.png "iptables-table-chain-rule-structure")
-
-
-The following diagram shows the three important tables in iptables.
-![Alt](http://www.thegeekstuff.com/wp-content/uploads/2011/01/iptables-filter-nat-mangle-tables.png "iptables-filter-nat-mangle-tables")
-
-* Filter is default table for iptables. So, if you don’t define you own table, you’ll be using filter table. 
-  Iptables’s filter table has the following built-in chains.
-* Iptable’s NAT table has the following built-in chains.
-* Iptables’s Mangle table is for specialized packet alteration.
-
-
-![Alt](https://i.stack.imgur.com/4wdkF.png "Routing 101")
-
+![tables_traverse](img/tables_traverse.jpg)
 
 Following are the key points to remember for the iptables rules.
 
@@ -35,7 +22,7 @@ $ docker run -it --rm --privileged -p 8000:8000 odedpriva/docker-networking sh
  
 # starting an alpine container
 # --rm         : delete container after we start it
-# --privileged : to get iptables work
+# --privileged : to get iptables work ( allow access to kernel utilities )
 # -p 8000:8000 : exposing port 8000 
 # odedpriva/docker-networking : container name
 # sh : using sh shell as the conatiner process.
