@@ -4,12 +4,12 @@
 * Instead, the network interface can be implemented in software. 
 * For example, the loopback interface (127.0.0.1 for IPv4 and ::1 for IPv6) is not a physical device but a piece of software simulating a network interface
 
-![network interface](img/NIC.jpg)
+![network interface](https://docs.google.com/drawings/d/1ofppplY8hfjtnaOlcB9t1cqaPXsYfRx8P5Tj1oBWL2c/pub?w=753&h=485)
 
 
 ~~~
 
-host $ docker run --rm -it --privileged --name c1 odedpriva/docker-networking sh
+host $ docker run --rm -it --privileged --name c1 networking sh
 c1 $ ip link add name dummy1 type dummy
 c1 $ ip l set dummy1 up
 c1 $ ip addr add 127.0.0.2/8 dev dummy1

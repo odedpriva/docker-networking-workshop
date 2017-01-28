@@ -7,10 +7,11 @@ Let's start by creating a swarm using docker-in-docker
 ~~~
 
 This is what we created in high level
-![overlay network 1](https://docs.google.com/drawings/d/1n3TX41f3SiQSe_qW5tGng-rJPv1ZMFqDmTehz0uKwFY/pub?w=889&h=708)
+![overlay network 1](https://docs.google.com/drawings/d/1n3TX41f3SiQSe_qW5tGng-rJPv1ZMFqDmTehz0uKwFY/pub?w=960&h=540)
 
 
 let's run our exposed ( exposed on our manager ) port with a request
+~~~
 host$ for i in {1..5}; do curl localhost:8000/etc/hostname; echo ; done
 {"serverHostName":"a1ad988af922","proxyHostName":"64b044c48309"}
 {"serverHostName":"c72f9c46389d","proxyHostName":"a051c9e81e7b"}
@@ -27,16 +28,43 @@ When any Swarm node receives traffic destined to the published TCP/UDP port of a
 
 In high level, this is how it goes: 
 
-![overlay network 2](https://docs.google.com/drawings/d/1VcU77UHCVwQH_537bsspuW5DwMZqAWKg8w-Ue8wqrs0/pub?w=1152&h=708)
+![overlay network 2](https://docs.google.com/drawings/d/1VcU77UHCVwQH_537bsspuW5DwMZqAWKg8w-Ue8wqrs0/pub?w=960&h=540)
 
-the interfaces
+1. The request hit our manager on eth0. 
+2. The request goes through the iptables NAT table to DOCKER-INGRESS chain and is forwarded to 172.19.0.2 .
 ~~~
-host$ manager ip -o -f inet a
-      1: lo    inet 127.0.0.1/8 scope host lo\       valid_lft forever preferred_lft forever
-      10: docker0    inet 172.17.0.1/16 scope global docker0\       valid_lft forever preferred_lft forever
-      15: docker_gwbridge    inet 172.19.0.1/16 scope global docker_gwbridge\       valid_lft forever preferred_lft forever
-      45: eth0    inet 172.18.0.2/16 scope global eth0\       valid_lft forever preferred_lft forever
+host$ manager iptables -t nat -L PREROUTING 1
+      DOCKER-INGRESS  all  --  anywhere             anywhere             ADDRTYPE match dst-type LOCAL
+host$ manager iptables -t nat -L DOCKER-INGRESS 1
+      DNAT       tcp  --  anywhere             anywhere             tcp dpt:8000 to:172.19.0.2:8000
 ~~~
+3. The request goes through the `docker_gwbridge` into the `ingress-sbox`
+4. In the `ingress-sbox`, docker uses mangle mark rule to mark packets with ipvs fwmark id.
+In general, The MARK target lets us set a 32-bit value (or 0xFFFFFFFF) on a packet, which we can then look for later with the mark match 
+This is basically the external load-balancing part as the destination will be RR through all our proxy containers.
+~~~
+host$ manager nsenter --net=/var/run/docker/netns/ingress_sbox iptables -t mangle -L PREROUTING 1
+      **MARK**     tcp  --  anywhere             anywhere             tcp dpt:8000 MARK set 0x103
+host$ manager nsenter --net=/var/run/docker/netns/ingress_sbox iptables -t nat -L POSTROUTING 2
+      SNAT       all  --  anywhere             10.255.0.0/16        ipvs to:10.255.0.3
+host$ manager nsenter --net=/var/run/docker/netns/ingress_sbox ipvsadm -L
+      IP Virtual Server version 1.2.1 (size=4096)
+      Prot LocalAddress:Port Scheduler Flags
+      -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+      FWM  259 rr
+      -> 10.255.0.8:0                 Masq    1      0          0
+      -> 10.255.0.9:0                 Masq    1      0          0
+~~~
+
+Now, our packet needs to find his way to the vxlan tunnel, 
+This is done using the net ingress-network that has a bridge interface connecting containers network with the vxlan tunnel.
+~~~
+host$ manager nsenter --net=/var/run/docker/netns/1-b0tba1uoso brctl show br0
+      bridge name	bridge id		STP enabled	interfaces
+      br0		8000.5e81d7221f6d	no		vxlan1
+							      veth2
+~~~
+
 
 ingress ? what is ingress ? 
 
