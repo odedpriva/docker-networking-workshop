@@ -3,7 +3,7 @@
 A Linux network namespace is an isolated network stack in the kernel with its own interfaces, routes, firewall and its own sockets isolated from other netns.
 
 
-let's work on c1 container:
+let's work on c1 container: 
 `host$ docker run -it --rm --name c1 --privileged networking sh`
 
 let's create 2 namespaces:
@@ -20,9 +20,9 @@ let's create a veth interface and attach it to red ns
 ip l add veth0 type veth peer name veth1
 ip l set veth1 netns red
 red ip l set veth1 name eth0
-red ip a add 10.0.0.10 dev eth0
+red ip a add 10.0.0.2/32 dev eth0
 red ip link set eth0 up
-red ip r add default via 10.0.0.10
+red ip r add default via 10.0.0.1
 red ip route flush cache
 ip l set veth0 up
 ~~~
@@ -45,7 +45,13 @@ so let's do the same for our c1 container.
 ip l add br0 type bridge
 ip l set br0 up
 ip a add 10.0.0.1/16 dev br0
+ip l set veth0 master br0
 ~~~
+
+
+/ # iptables -t nat -A POSTROUTING -o br0 -j MASQUERADE
+/ # iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
 
 let's check connectivity
 ping eth0 from network namespace
