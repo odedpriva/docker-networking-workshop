@@ -6,6 +6,7 @@
 
 ![network interface](https://docs.google.com/drawings/d/1ofppplY8hfjtnaOlcB9t1cqaPXsYfRx8P5Tj1oBWL2c/pub?w=753&h=485)
 
+
 let's start by creating a contaienr
 ~~~
 host $ docker run --rm -it --privileged --name c1 networking sh

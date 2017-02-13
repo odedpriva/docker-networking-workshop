@@ -1,6 +1,6 @@
 #### bridge driver on user defined network
 
-* users can create their own networks called user-defined networks of any network driver type. 
+* Users can create their own networks called user-defined networks of any network driver type. 
 * Docker will create a new Linux bridge on the host. 
 * User-defined networks supports manual IP address and subnet assignment. 
 * If an assignment isn't given, then Docker's default IPAM driver will assign the next subnet available in the private IP space.
