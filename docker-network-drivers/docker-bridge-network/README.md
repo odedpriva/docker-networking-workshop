@@ -23,7 +23,7 @@ Our default GW is docker0
 All packets destined to 172.17.X.X are routed through eth0
 
 
-What's going on on the docker-for-mac? 
+What's going on docker-for-mac? 
 
 ~~~
 host $ docker run --rm -it --privileged --pid=host networking nsenter -t 1 -m -u -n -i sh -c "ip route"

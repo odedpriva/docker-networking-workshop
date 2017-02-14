@@ -1,13 +1,21 @@
-#### let'a start by checking an engine host configuration.
+## let'a start by checking an engine host configuration.
 
 skip this if you are running on native linux machine.
 
-* on your mac: 'login' to the docker-on-mac namespace by using nsenter  
-`docker run -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh`
+let's check the initial configraion for host with docker installed.
 
-* or use screen
-`screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty`
-`screen -ls | grep Detached | cut -d. -f1 | awk '{print $1}' | xargs kill | screen -wipe`
+#### interface
+~~~
+docker run --rm -it --privileged --name c1 networking sh -c 'ip a show eth0'
+104: eth0@if105: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:acff:fe11:2/64 scope link tentative
+       valid_lft forever preferred_lft forever
+~~~
+
+iptables
 
 let's check docker0 interfaces.
 ~~~
