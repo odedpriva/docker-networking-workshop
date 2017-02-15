@@ -18,9 +18,10 @@ This workshop will intreduce general netowrking concepts, tools and docker speci
 
 The workshop has 2 part 
 
-#### Part 1
+#### Part 1 - 90 minutes
 
-- linux networking: 
+- linux networking:
+    - Networking models.
     - NIC
     - Routing
     - iptables
@@ -28,11 +29,11 @@ The workshop has 2 part
     - name resolution
     - ipvs
 
+#### Part 2 - 90 minutes
 - docker netowrk background:
     - history
     - componenets
 - docker network subcommand. 
 - docker network drivers:
-    - 
-
-===
+    - bridge
+    - overlay
