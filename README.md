@@ -37,3 +37,11 @@ The workshop has 2 part
 - docker network drivers:
     - bridge
     - overlay
+
+### Knowladge Prerequisites
+- Participants are expected to have expiriance with docker.
+- Although I will try to cover all that is needed from networking POV, participants who have basic knowladge in the OSI or TCP/IP model, will find the workshop musch easier to follow.
+
+### Hardware Prerequisites
+- This wordshop was built on MAC Sierra, with Docker 1.12 ( tested on 1.13 ).
+- Other OS ( Windows, Ubuntu etc .. ) could also benefit from both part of the Workshop but some commands will just not work. 
