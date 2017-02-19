@@ -1,4 +1,6 @@
-### networking models
+Ntworking models
+===
+
 Layers model is a theoretical approach that describe how data is going to be transmit over the network. 
 There are several layer models available, and here we will cover 2:
 
@@ -13,7 +15,8 @@ There are several layer models available, and here we will cover 2:
 
 ![OSI - 2](https://docs.google.com/drawings/d/1HGrLyjASKeulud2DER2scDpC9GxWVRG7Hs0O8VYBUoE/pub?w=1142&h=870)
 
-**A**ll **P**eople **S**eem **t**o **N**eed **D**ata **P**rocessing
+
+<center>**A**ll **P**eople **S**eem **t**o **N**eed **D**ata **P**rocessing</center>
 ---
 
 ![OSI - 3](https://docs.google.com/drawings/d/1hIawmdk7ZvwrRL0AaPdn1afQsL2aLFnkKQq2V1Wryys/pub?w=919&h=329)
@@ -21,7 +24,7 @@ There are several layer models available, and here we will cover 2:
 We will use the OSI model to describe what happens when you click a link in a web page in your web browser
 
 | Layer        | Example     | Functionality                                                                                                                                                                                                                                                                                                                                                                      |
-|--------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:--------------------------------------:|:--------------------------------------:|:--------------------------------------|
 | APPLICATION  | Web Browser | The web browser is an APPLICATION. The web browser application gives you the means to select a web server, contact the server and request a web page. The web browser handles the process of finding the web server (the remote computer that has the web page you want stored on it) , requesting the desired web page and displaying all the files contained within the web page |
 | PRESENTATION | HTTP        | The web browser handles PRESENTATION of the web page to the user by converting the files stored at the web server into formats used to display them on your computer.                                                                                                                                                                                                              |
 | SESSION      |             | When you request a web page, the web browser opens a TCP connection to the web server and might open additional connections for additional resources , Each TCP connection is a SESSION.                                                                                                                                                                                           |
@@ -40,7 +43,8 @@ We will use the OSI model to describe what happens when you click a link in a we
 
 ![networking model](https://docs.google.com/drawings/d/1Gr_4a7kMwr1o619jwChy8ZW9lV66d_TwX4-lBnHydKE/pub?w=652&h=371)
 
-
+Let's move on and go over some advanced netwokring concepts
+[addressing and subnetting](01-addressing-and-subnetting/README.md)
 links
 ---
 * [what-s-difference-between-osi-seven-layer-network-model-and-tcpip](http://electronicdesign.com/what-s-difference-between/what-s-difference-between-osi-seven-layer-network-model-and-tcpip)
