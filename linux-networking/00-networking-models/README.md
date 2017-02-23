@@ -44,6 +44,11 @@ We will use the OSI model to describe what happens when you click a link in a we
 
 Let's move on and go over some advanced netwokring concepts
 [addressing and subnetting](../01-addressing-and-subnetting/README.md)
+
+
+
 links
 ---
 * [what-s-difference-between-osi-seven-layer-network-model-and-tcpip](http://electronicdesign.com/what-s-difference-between/what-s-difference-between-osi-seven-layer-network-model-and-tcpip)
+
+

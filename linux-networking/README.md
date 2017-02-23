@@ -44,6 +44,7 @@ the outputh displays docker-for-mac's alpine interfaces
 let's use alias it to make our life easier
 `alias docker-for-mac='docker run -it --privileged --pid=host networking nsenter -t 1 -n sh -c'`
 
-Before we start with the fun fun fun .. let's refersh out memory with some academic TCP/IP model.
+
+Before we start with the fun fun fun .. let's refersh out memory with some academic netowrking basics. 
 
 [TCP/IP](00-networking-models/README.md)
