@@ -15,7 +15,6 @@ There are several layer models available, and here we will cover 2:
 
 ![OSI - 2](https://docs.google.com/drawings/d/1HGrLyjASKeulud2DER2scDpC9GxWVRG7Hs0O8VYBUoE/pub?w=1142&h=870)
 
-
 <center>**A**ll **P**eople **S**eem **t**o **N**eed **D**ata **P**rocessing</center>
 ---
 
@@ -44,7 +43,7 @@ We will use the OSI model to describe what happens when you click a link in a we
 ![networking model](https://docs.google.com/drawings/d/1Gr_4a7kMwr1o619jwChy8ZW9lV66d_TwX4-lBnHydKE/pub?w=652&h=371)
 
 Let's move on and go over some advanced netwokring concepts
-[addressing and subnetting](01-addressing-and-subnetting/README.md)
+[addressing and subnetting](../01-addressing-and-subnetting/README.md)
 links
 ---
 * [what-s-difference-between-osi-seven-layer-network-model-and-tcpip](http://electronicdesign.com/what-s-difference-between/what-s-difference-between-osi-seven-layer-network-model-and-tcpip)
