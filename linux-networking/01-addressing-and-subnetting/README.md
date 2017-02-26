@@ -87,4 +87,7 @@ How do split it to 2 subnetworks ?
 | B | 125 | 126 | 192.168.254.128 | /25 | 255.255.255.128 | 192.168.254.129 - 192.168.254.254 | 192.168.254.255 |
 
 
-Now, let's see how the subnet mask is used when packets are routed to thier destination. 
+Before we will see how subnet mask is used when packets are routed to thier destination, let's find out what NICs are
+
+[NICs](../02-nic/README.md)
+

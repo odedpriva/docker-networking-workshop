@@ -50,10 +50,10 @@ What's going on ? how can we solve it?
 
 Hints : 
 1. check the routing tables and visualize the route the ICMP package is using. 
-2. to check the 
+2. to check the routing table :
 ~~~~
-docker run --rm --name c1 -it networking ip r
+docker run --rm --name c1 -it networking 'ip r'
+docker-for-mac 'ip r'
 ~~~~
-check the routing tables 
-http://www.dscentral.in/2011/07/14/understanding-ip-address-and-subnet-mask/
 
+next section, [iptables](../04-iptables/README.md)

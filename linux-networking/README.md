@@ -4,7 +4,7 @@ linux networking
 ### Participants Will
 
 - Build the `lab` that will be used throughout this part. 
-- Refreshes and gain new knowlasdge on core Linux concepts that provide a foundation for 2nd part, such as TCP/IP, OSI, name resolution, and the IP and other tools.
+- Refreshes and gain new knowlasdge on core Linux concepts that provide a foundation for 2nd part, such as TCP/IP, OSI, name resolution, and `ip` command and other tools.
 
 ![wax-on-wax-off.jpg](http://i.imgur.com/5QlICkE.gif)
 

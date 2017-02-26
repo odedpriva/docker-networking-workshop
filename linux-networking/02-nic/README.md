@@ -31,3 +31,6 @@ c1 $ ping -c 2 10.0.0.1
     2 packets transmitted, 2 packets received, 0% packet loss
     round-trip min/avg/max = 0.072/0.083/0.094 ms
 ~~~
+
+
+next [arp and routing](../03-arp-and-routing/README.md)

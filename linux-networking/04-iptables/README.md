@@ -1,12 +1,19 @@
 ### IPtables
-`iptables` is a command-line firewall utility that uses policy chains to allow or block traffic.  
-When a connection tries to establish itself on your system, iptables looks for a rule in its list to match it to. 
-If it doesn't find one, it resorts to the default action.
+`iptables` is a user-space application program that allow to configure tables provided by the Linux kernel firewall and the chains and rules it stores
 
-On a high-level iptables might contain multiple tables. Tables might contain multiple chains.  
-Chains can be built-in or user-defined. Chains might contain multiple rules. Rules are defined for the packets.
+There are 5 tables : filter, nat, mangle, raw, security
 
-![tables_traverse](https://docs.google.com/drawings/d/1bdHGG_II5RrTF5vuE_Vwl1qkCrlZg9cC1-h17veKUv0/pub?w=405&h=687)
+We are intrested in the following 3: 
+
+|             |   filter <br> This is the default table   | nat <br> This table is consulted when a packet that creates a new connection is encountered | mangle <br> This table is used for specialized packet alteration |
+|:-----------:|:------------------------------------:|:---------------------------------------------------------------------------------------:|:-----------------------------------------------------------:|
+|    INPUT    |   packets destined to local sockets  |                                                                                         |              packets coming into the box itself             |
+|   FORWARD   | packets being routed through the box |                                                                                         |        altering packets being routed through the box        |
+|    OUTPUT   |       locally-generated packets      |                    altering locally-generated packets before routing                    |      altering locally-generated packets before routing      |
+|  PREROUTING |                                      |                         altering packets as soon as they come in                        |           altering incoming packets before routing          |
+| POSTROUTING |                                      |                       altering packets as they are about to go out                      |         altering packets as they are about to go out        |
+
+![tables_traverse](https://docs.google.com/drawings/d/1c_U85mqDztLmU3C7ArY4uMh2mRBE5f3XKuIczvTO1_s/pub?w=911&h=308)
 
 Following are the key points to remember for the iptables rules.
 
