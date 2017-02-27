@@ -85,3 +85,4 @@ $ iptables -D INPUT 1
 ~~~
 
 #### links 
+http://www.faqs.org/docs/iptables/traversingoftables.html

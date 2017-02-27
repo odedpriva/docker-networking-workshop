@@ -80,7 +80,8 @@ Consider the following class **?** network: 192.168.254.0/24
 The default subnet mask for this network is 255.255.255.0. This single network can be segmented, or subnetted, into multiple networks
 How many bits do I need to steal to allow 10 subnets? 
 
-How do split it to 2 subnetworks ? 
+How do split it to 2 subnetworks ?  
+
 | Subnet Name | Needed Size | Allocated Size | Address | Mask | Dec Mask | Assignable Range | Broadcast |
 |:-----------:|:-----------:|:--------------:|:-------:|:----:|:--------:|:----------------:|:---------:|
 | A | 126 | 126 | 192.168.254.0 | /25 | 255.255.255.128 | 192.168.254.1 - 192.168.254.126 | 192.168.254.127 |
