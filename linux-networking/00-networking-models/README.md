@@ -1,5 +1,5 @@
 Ntworking models
-===
+---
 
 Layers model is a theoretical approach that describe how data is going to be transmit over the network. 
 There are several layer models available, and here we will cover 2:

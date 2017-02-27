@@ -1,4 +1,6 @@
-### IPtables
+IPtables
+--- 
+
 `iptables` is a user-space application program that allow to configure tables provided by the Linux kernel firewall and the chains and rules it stores
 
 There are 5 tables : filter, nat, mangle, raw, security
@@ -83,6 +85,9 @@ $ iptables -A INPUT -p tcp --dport 8000 -j DROP
 # delete rule #1
 $ iptables -D INPUT 1
 ~~~
+
+next section, [namespcae and linux bridging](../05-namespace-and-linux-bridge/README.md)
+
 
 #### links 
 http://www.faqs.org/docs/iptables/traversingoftables.html

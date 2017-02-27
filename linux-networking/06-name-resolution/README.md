@@ -1,4 +1,6 @@
-##Name resolution
+name resolution
+---
+
 DNS syncs up domain names with IP addresses enabling humans to use memorable domain names while computers on the Internet can use IP addresses
 
 The process of local name resolution is enabled using these files : 
@@ -31,3 +33,5 @@ $ docker run -t --rm --name c1 networking tcpdump not arp
 $ docker exec -it c1 nslookup google.com
 
 ~~~
+
+next section, [IPVS](../07-ipvs/README.md)

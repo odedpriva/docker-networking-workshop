@@ -1,4 +1,6 @@
-### NIC 
+NIC 
+---
+
 ![network interface](https://docs.google.com/drawings/d/1ofppplY8hfjtnaOlcB9t1cqaPXsYfRx8P5Tj1oBWL2c/pub?w=753&h=485)
 
 * A network interface is the point of interconnection between a computer and a private or public network. 

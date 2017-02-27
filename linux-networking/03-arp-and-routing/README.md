@@ -1,5 +1,6 @@
 Resolving Logical Addresses to Hardware Addresses
 ---
+
 * A host cannot directly send data to another host’s logical address. 
 * A destination logical address must be mapped to a hardware address, so that the Data-Link layer can package a frame to transmit on the physical medium.
 

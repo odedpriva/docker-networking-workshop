@@ -1,4 +1,5 @@
-#### Network Namespace.
+namespace and linux bridge
+---
 
 A Linux network namespace is an isolated network stack in the kernel with its own interfaces, routes, firewall and its own sockets isolated from other netns.
 
@@ -114,7 +115,7 @@ what are we missing ?
 
 NAT rules for outgress networking 
 ~~~
-#iptables -t nat -A POSTROUTING -o br0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o br0 -j MASQUERADE
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 ~~~
 
@@ -142,3 +143,6 @@ docker exec -it c1 sh -c "ip netns exec red arping -c1 172.17.0.2"
       Sent 1 probe(s) (1 broadcast(s))
       Received 1 replies (0 request(s), 0 broadcast(s))
 ~~~
+
+
+next section, [name resolution](../06-name-resolution/README.md)
