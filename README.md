@@ -1,6 +1,6 @@
 ### Workshop Descriptions
 
-Docker has revolutionized virtualization by abstarcting some ~15 years old Kernel tools, 
+- Docker has revolutionized virtualization by abstarcting some ~15 years old Kernel tools, 
 allowing developers, system admins and Devops to easily package and deliver application-in-containers 
 without worring about the underlying infrastructure and application dependencies when moving from one environment to another.  
 
@@ -40,8 +40,8 @@ The workshop has 2 part
 
 ### Who this workshop is for
 
-- This workshop is targeted at the users who already know the basics of Docker and linux networking, 
-That wan't to know how this `black magic` of container networking works under-the-hood
+- This workshop is targeted at users who already know the basics of Docker and linux networking, 
+That want to know how this `magic` of container networking works under-the-hood
 
 ### Knowladge Prerequisites
 - Participants are expected to have expiriance with docker.

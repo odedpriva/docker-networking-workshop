@@ -1,11 +1,11 @@
-Ntworking models
+Networking models
 ---
 
 Layers model is a theoretical approach that describe how data is going to be transmit over the network. 
 There are several layer models available, and here we will cover 2:
 
-- TCP/IP Protocol Suite
 - OSI model
+- TCP/IP Protocol Suite
 
 #### OSI model ( Open System Interconnection )
 * The OSI model is a standard of the International Organization for Standardization (ISO). 

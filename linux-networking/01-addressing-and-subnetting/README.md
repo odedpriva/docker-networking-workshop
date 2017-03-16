@@ -1,10 +1,12 @@
 Addressing and Subnetting
+===
+
+Hardware Addressing
 ---
 
-### Hardware Addressing
-* A hardware address is used to uniquely identify a host within a local network. 
+* A hardware address is used to uniquely identify a host within a local network.
 * Hardware addressing is a function of the Data-Link layer of the OSI model (Layer-2).
-* Ethernet utilizes the 48-bit MAC address as its hardware address     
+* Ethernet utilizes the 48-bit MAC address as its hardware address
 * A MAC address is most often represented in hexadecimal for e.g **00:43:AB:F2:32:13**
 
 | OUI (Organizational Unique Identifier) |  host ID |
@@ -13,12 +15,17 @@ Addressing and Subnetting
 
 * MAC addresses provide no mechanism to create boundaries between networks, There is no method to distinguish one network from another
 
-### Logical Addressing
+Logical Addressing
+---
+
 A logical address contains two components:
+
 * Network ID – identifies which network a host belongs to.
 * Host ID – uniquely identifies the host on that network.
 
-### `IP` provides two fundamental Network layer services:
+`IP` provides two fundamental Network layer services:
+---
+
 * Logical addressing – provides a unique address that identifies both the host, and the network that host exists on.
 * Routing – determines the best path to a particular destination network, and then routes data accordingly.
 
