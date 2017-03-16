@@ -40,8 +40,6 @@ We will use the OSI model to describe what happens when you click a link in a we
 
 ![TCP/IP](https://docs.google.com/drawings/d/1lpgtyNne6RtAB-2_XM_ffy7x6e1wnEqw_78NQ4Tx_e0/pub?w=625&h=479)
 
-![networking model](https://docs.google.com/drawings/d/1Gr_4a7kMwr1o619jwChy8ZW9lV66d_TwX4-lBnHydKE/pub?w=652&h=371)
-
 Let's move on and go over some advanced netwokring concepts
 [addressing and subnetting](../01-addressing-and-subnetting/README.md)
 
