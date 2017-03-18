@@ -29,7 +29,9 @@ A logical address contains two components:
 * Logical addressing – provides a unique address that identifies both the host, and the network that host exists on.
 * Routing – determines the best path to a particular destination network, and then routes data accordingly.
 
-### `IPv4` Addressing
+`IPv4` Addressing
+---
+
 * IPv4 employs a 32-bit address, which limits the number of possible addresses to 4,294,967,296.
 * An IP address provides a hierarchical structure to both uniquely identify a host, and what network that host exists on.
 
@@ -41,7 +43,8 @@ IP address : 10011110010100001010010000000011
 
 * Addresses are made up of parts, like state, city, street and finally house number. Most of the parts of an address are common to many people, like people living at same street or city. Generally only the house number and name finally differentiates between any two similar addresses
 
-#### What is a subnet mask?
+### What is a subnet mask?
+
 * Part of an IP address identifies the network. The other part of the address identifies the host. A subnet mask is required to provide this distinction
 * Subnet mask is a 32 bit number just like an IP address and is written just like it
 * A subnet mask should only have continuous 1s starting from left (MSB)
@@ -55,7 +58,7 @@ IP address : 10011110010100001010010000000011
 | 11111111 | 11111111 | 00000000 | 00000000 |
 
 
-The first 16 bits of the subnet mask are set to 1, Thus, the first 16 bits of the address (158.80) identify the network. 
+The first 16 bits of the subnet mask are set to 1, Thus, the first 16 bits of the address (158.80) identify the network.
 The last 16 bits of the subnet mask are set to 0. Thus, the last 16 bits of the address (164.3) identify the unique host on that network.
 
 |           |     Host 1     |     Host 2     | Subnet Mask |                         |
@@ -68,6 +71,7 @@ The last 16 bits of the subnet mask are set to 0. Thus, the last 16 bits of the 
 Routing is a means of sending an IP packet between different networks.
 
 ### Classfull subnetting
+
 * very specific subnetting architecture.
 
 | Class | First Octet Range | Default Subnet Mask | # networks |   # hosts  |                      Example                     |
@@ -77,17 +81,19 @@ Routing is a means of sending an IP packet between different networks.
 |   C   |     192 - 223     |    255.255.255.0    |  2,097,152 |     254    | Address: 207.79.233.6 Subnet Mask: 255.255.255.0 |
 
 ### Classless subnetting - CIDR (Classless Inter-Domain Routing)
+
 * Classless Inter-Domain Routing (CIDR) is a simplified method of representing a subnet mask. 
 * CIDR identifies the number of binary bits set to a 1 (or on) in a subnet mask, preceded by a slash.
 
 ### Subnetting 
+
 * Subnetting is the process of creating new networks (or subnets) by stealing bits from the host portion of a subnet mask.
 
-Consider the following class **?** network: 192.168.254.0/24  
+Consider the following class **?** network: 192.168.254.0/24
 The default subnet mask for this network is 255.255.255.0. This single network can be segmented, or subnetted, into multiple networks
-How many bits do I need to steal to allow 10 subnets? 
+How many bits do I need to steal to allow 10 subnets?
 
-How do split it to 2 subnetworks ?  
+How do split it to 2 subnetworks ?
 
 | Subnet Name | Needed Size | Allocated Size | Address | Mask | Dec Mask | Assignable Range | Broadcast |
 |:-----------:|:-----------:|:--------------:|:-------:|:----:|:--------:|:----------------:|:---------:|
